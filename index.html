@@ -9,12 +9,11 @@
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* PERBAIKAN: Kamera live akan di-mirror, tapi canvas pratinjau tidak */
         #camera-feed.mirrored {
             transform: scaleX(-1);
         }
         #photo-preview {
-            transform: scaleX(1); /* Pastikan pratinjau tidak terbalik */
+            transform: scaleX(1);
         }
         .loader {
             border: 4px solid #f3f3f3;
@@ -36,11 +35,9 @@
 <body class="bg-gray-100 text-gray-800">
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-6xl">
         
-        <!-- === KODE BARU: Penambahan Logo === -->
         <div class="text-center mb-6">
             <img src="./assets/uin_logo.png" alt="Logo UIN" class="w-24 h-auto mx-auto">
         </div>
-        <!-- ================================ -->
 
         <h1 class="text-3xl font-bold text-center mb-2">Registrasi Absensi Mahasiswa</h1>
         <p class="text-center text-gray-600 mb-8">Fakultas Adab dan Humaniora</p>
@@ -52,6 +49,7 @@
                 <div>
                     <h2 class="text-2xl font-bold mb-6 border-b pb-3">Formulir Data Diri</h2>
                     <form id="registration-form" class="space-y-4">
+                        <!-- Input fields (tidak berubah) -->
                         <div>
                             <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
                             <input type="text" id="nama" name="nama" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
@@ -73,7 +71,7 @@
                             <input type="text" id="programStudi" name="programStudi" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
-                            <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-1">Fakultas</pre>
+                            <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-1">Fakultas</label>
                             <input type="text" id="fakultas" name="fakultas" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
@@ -89,7 +87,7 @@
                     </form>
                 </div>
 
-                <!-- Kolom Kamera -->
+                <!-- Kolom Kamera (tidak berubah) -->
                 <div class="flex flex-col items-center">
                     <h2 class="text-2xl font-bold mb-6 border-b pb-3 w-full text-left">Ambil Foto Diri</h2>
                     <div class="w-full max-w-md aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
@@ -97,13 +95,11 @@
                         <canvas id="photo-preview" class="hidden w-full h-full object-cover"></canvas>
                         <p id="camera-placeholder" class="text-gray-500">Kamera tidak aktif</p>
                     </div>
-                    
                     <div id="camera-controls" class="w-full max-w-md">
                          <p id="photo-status" class="text-center mb-2 font-medium text-red-600">Status: Belum ada foto</p>
                          <button type="button" id="start-camera" class="w-full bg-gray-700 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition mb-2">Mulai Kamera</button>
                          <button type="button" id="capture-photo" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition hidden">Ambil Foto</button>
                     </div>
-
                     <div id="preview-controls" class="hidden w-full max-w-md grid grid-cols-2 gap-2">
                         <button type="button" id="retake-photo" class="w-full bg-yellow-500 text-white font-bold py-2 px-4 rounded-md hover:bg-yellow-600 transition">Ambil Ulang</button>
                         <button type="button" id="confirm-photo" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">Gunakan Foto Ini</button>
@@ -117,8 +113,8 @@
     </div>
 
     <script>
+        // Logika kamera (tidak berubah)
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysoBFtJu4XyMdsJqPaJ2DZZcDHq7LxdxE1jGGDHflnAQ5IGG7HmNeuqPKFvsCi4YfP/exec';
-
         const video = document.getElementById('camera-feed');
         const canvas = document.getElementById('photo-preview');
         const startButton = document.getElementById('start-camera');
@@ -139,66 +135,46 @@
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
                 video.srcObject = stream;
-                video.style.display = 'block';
-                canvas.style.display = 'none';
-                cameraPlaceholder.style.display = 'none';
-                startButton.style.display = 'none';
-                captureButton.style.display = 'block';
-                cameraControls.style.display = 'block';
-                previewControls.style.display = 'none';
-                photoStatus.textContent = 'Status: Kamera aktif';
+                video.style.display = 'block'; canvas.style.display = 'none'; cameraPlaceholder.style.display = 'none';
+                startButton.style.display = 'none'; captureButton.style.display = 'block'; cameraControls.style.display = 'block';
+                previewControls.style.display = 'none'; photoStatus.textContent = 'Status: Kamera aktif';
                 photoStatus.className = 'text-center mb-2 font-medium text-blue-600';
             } catch (err) {
-                console.error("Error accessing camera: ", err);
-                cameraPlaceholder.textContent = 'Gagal mengakses kamera.';
-                alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin dan tidak ada aplikasi lain yang sedang menggunakannya.');
+                console.error("Error accessing camera: ", err); cameraPlaceholder.textContent = 'Gagal mengakses kamera.';
+                alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.');
             }
         });
-
         captureButton.addEventListener('click', () => {
             const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            context.save();
-            context.scale(-1, 1);
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            context.save(); context.scale(-1, 1);
             context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
             context.restore();
-
-            video.style.display = 'none';
-            canvas.style.display = 'block';
-            cameraControls.style.display = 'none';
-            previewControls.style.display = 'grid';
+            video.style.display = 'none'; canvas.style.display = 'block';
+            cameraControls.style.display = 'none'; previewControls.style.display = 'grid';
             capturedPhotoData = canvas.toDataURL('image/png');
         });
-
         retakeButton.addEventListener('click', () => {
-            video.style.display = 'block';
-            canvas.style.display = 'none';
-            cameraControls.style.display = 'block';
-            previewControls.style.display = 'none';
-            captureButton.style.display = 'block';
-            capturedPhotoData = null;
-            photoStatus.textContent = 'Status: Kamera aktif';
-            photoStatus.className = 'text-center mb-2 font-medium text-blue-600';
+            video.style.display = 'block'; canvas.style.display = 'none';
+            cameraControls.style.display = 'block'; previewControls.style.display = 'none';
+            captureButton.style.display = 'block'; capturedPhotoData = null;
+            photoStatus.textContent = 'Status: Kamera aktif'; photoStatus.className = 'text-center mb-2 font-medium text-blue-600';
         });
-
         confirmButton.addEventListener('click', () => {
             previewControls.style.display = 'none';
             photoStatus.textContent = '✓ Foto telah dikonfirmasi!';
             photoStatus.className = 'text-center mb-2 font-medium text-green-600';
         });
 
+        // --- PERUBAHAN UTAMA ADA DI SINI ---
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             if (GOOGLE_APPS_SCRIPT_URL.includes('MASUKKAN_URL')) {
-                alert('Error: URL Google Apps Script belum dikonfigurasi.');
-                return;
+                alert('Error: URL Google Apps Script belum dikonfigurasi.'); return;
             }
             if (!capturedPhotoData) {
-                alert('Silakan ambil dan konfirmasi foto diri Anda terlebih dahulu.');
-                return;
+                alert('Silakan ambil dan konfirmasi foto diri Anda terlebih dahulu.'); return;
             }
 
             submitButton.disabled = true;
@@ -207,43 +183,42 @@
 
             const formData = new FormData(form);
             const data = {
-                nama: formData.get('nama'),
-                nim: formData.get('nim'),
-                email: formData.get('email'),
-                noHandphone: formData.get('noHandphone'),
-                programStudi: formData.get('programStudi'),
-                fakultas: formData.get('fakultas'),
-                universitas: formData.get('universitas'),
+                nama: formData.get('nama'), nim: formData.get('nim'), email: formData.get('email'),
+                noHandphone: formData.get('noHandphone'), programStudi: formData.get('programStudi'),
+                fakultas: formData.get('fakultas'), universitas: formData.get('universitas'),
                 photo: capturedPhotoData
             };
 
             try {
+                // Hapus `mode: 'no-cors'` dan tambahkan penanganan respons
                 const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Diperlukan untuk Apps Script
-                    cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
-                    redirect: 'follow'
                 });
 
-                // Karena mode 'no-cors', kita tidak bisa membaca responsnya.
-                // Kita asumsikan sukses dan memberikan pesan umum.
-                alert("Registrasi Anda sedang diproses. Silakan cek email Anda dalam beberapa saat untuk konfirmasi dan QR Code.");
-                form.reset();
-                capturedPhotoData = null;
-                photoStatus.textContent = 'Status: Belum ada foto';
-                photoStatus.className = 'text-center mb-2 font-medium text-red-600';
-                canvas.style.display = 'none';
-                cameraPlaceholder.style.display = 'block';
-                cameraPlaceholder.textContent = 'Kamera tidak aktif';
-                cameraControls.style.display = 'block';
-                startButton.style.display = 'block';
-                captureButton.style.display = 'none';
+                const result = await response.json(); // Baca respons sebagai JSON
+
+                if (result.status === "success") {
+                    alert(result.message); // Tampilkan pesan sukses dari backend
+                    form.reset();
+                    // Reset status UI setelah sukses
+                    capturedPhotoData = null;
+                    photoStatus.textContent = 'Status: Belum ada foto';
+                    photoStatus.className = 'text-center mb-2 font-medium text-red-600';
+                    canvas.style.display = 'none';
+                    cameraPlaceholder.style.display = 'block';
+                    cameraPlaceholder.textContent = 'Kamera tidak aktif';
+                    cameraControls.style.display = 'block';
+                    startButton.style.display = 'block';
+                    captureButton.style.display = 'none';
+                } else {
+                    // Tampilkan pesan error spesifik dari backend
+                    throw new Error(result.message || 'Terjadi kesalahan yang tidak diketahui.');
+                }
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+                alert('Gagal mengirim data: ' + error.message);
             } finally {
                 submitButton.disabled = false;
                 submitText.classList.remove('hidden');
@@ -253,5 +228,4 @@
     </script>
 </body>
 </html>
-
 
